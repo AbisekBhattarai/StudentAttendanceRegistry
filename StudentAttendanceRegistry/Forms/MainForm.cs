@@ -6,4 +6,10 @@ public partial class MainForm : Form
     {
         InitializeComponent();
     }
+
+    private void btnManageStudents_Click(object sender, EventArgs e)
+    {
+        StudentForm form = new StudentForm();
+        form.ShowDialog();
+    }
 }
