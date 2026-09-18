@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <connectionStrings>
+    <!-- Copy this file to App.config. XAMPP uses root with a blank password by default -->
+    <add name="AttendanceDb"
+         connectionString="server=localhost;port=3306;database=attendance_registry;user=root;password=;"
+         providerName="MySql.Data.MySqlClient" />
+  </connectionStrings>
+</configuration>
