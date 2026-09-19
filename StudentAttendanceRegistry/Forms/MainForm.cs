@@ -12,4 +12,10 @@ public partial class MainForm : Form
         StudentForm form = new StudentForm();
         form.ShowDialog();
     }
+
+    private void btnManageClasses_Click(object sender, EventArgs e)
+    {
+        ClassForm form = new ClassForm();
+        form.ShowDialog();
+    }
 }

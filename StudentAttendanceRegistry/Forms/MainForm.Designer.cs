@@ -31,6 +31,7 @@ partial class MainForm
         components = new System.ComponentModel.Container();
         lblTitle = new Label();
         btnManageStudents = new Button();
+        btnManageClasses = new Button();
         SuspendLayout();
         //
         // lblTitle
@@ -53,10 +54,21 @@ partial class MainForm
         btnManageStudents.UseVisualStyleBackColor = true;
         btnManageStudents.Click += btnManageStudents_Click;
         //
+        // btnManageClasses
+        //
+        btnManageClasses.Location = new Point(30, 140);
+        btnManageClasses.Name = "btnManageClasses";
+        btnManageClasses.Size = new Size(180, 35);
+        btnManageClasses.TabIndex = 2;
+        btnManageClasses.Text = "Manage Classes";
+        btnManageClasses.UseVisualStyleBackColor = true;
+        btnManageClasses.Click += btnManageClasses_Click;
+        //
         // MainForm
         //
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(800, 450);
+        Controls.Add(btnManageClasses);
         Controls.Add(btnManageStudents);
         Controls.Add(lblTitle);
         Name = "MainForm";
@@ -70,4 +82,5 @@ partial class MainForm
 
     private Label lblTitle;
     private Button btnManageStudents;
+    private Button btnManageClasses;
 }
