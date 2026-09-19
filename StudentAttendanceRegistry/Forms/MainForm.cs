@@ -24,4 +24,10 @@ public partial class MainForm : Form
         EnrolmentForm form = new EnrolmentForm();
         form.ShowDialog();
     }
+
+    private void btnRecordAttendance_Click(object sender, EventArgs e)
+    {
+        AttendanceForm form = new AttendanceForm();
+        form.ShowDialog();
+    }
 }

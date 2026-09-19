@@ -33,6 +33,7 @@ partial class MainForm
         btnManageStudents = new Button();
         btnManageClasses = new Button();
         btnManageEnrolments = new Button();
+        btnRecordAttendance = new Button();
         SuspendLayout();
         //
         // lblTitle
@@ -75,10 +76,21 @@ partial class MainForm
         btnManageEnrolments.UseVisualStyleBackColor = true;
         btnManageEnrolments.Click += btnManageEnrolments_Click;
         //
+        // btnRecordAttendance
+        //
+        btnRecordAttendance.Location = new Point(30, 240);
+        btnRecordAttendance.Name = "btnRecordAttendance";
+        btnRecordAttendance.Size = new Size(180, 35);
+        btnRecordAttendance.TabIndex = 4;
+        btnRecordAttendance.Text = "Record Attendance";
+        btnRecordAttendance.UseVisualStyleBackColor = true;
+        btnRecordAttendance.Click += btnRecordAttendance_Click;
+        //
         // MainForm
         //
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(800, 450);
+        Controls.Add(btnRecordAttendance);
         Controls.Add(btnManageEnrolments);
         Controls.Add(btnManageClasses);
         Controls.Add(btnManageStudents);
@@ -96,4 +108,5 @@ partial class MainForm
     private Button btnManageStudents;
     private Button btnManageClasses;
     private Button btnManageEnrolments;
+    private Button btnRecordAttendance;
 }
