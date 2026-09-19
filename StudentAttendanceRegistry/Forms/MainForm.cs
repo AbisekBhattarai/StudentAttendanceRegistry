@@ -18,4 +18,10 @@ public partial class MainForm : Form
         ClassForm form = new ClassForm();
         form.ShowDialog();
     }
+
+    private void btnManageEnrolments_Click(object sender, EventArgs e)
+    {
+        EnrolmentForm form = new EnrolmentForm();
+        form.ShowDialog();
+    }
 }
