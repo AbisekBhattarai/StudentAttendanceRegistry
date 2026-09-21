@@ -7,6 +7,7 @@ public partial class AttendanceForm : Form
 {
     private ClassRepository classRepository = new ClassRepository();
     private EnrolmentRepository enrolmentRepository = new EnrolmentRepository();
+    private AttendanceRepository attendanceRepository = new AttendanceRepository();
 
     public AttendanceForm()
     {
@@ -113,6 +114,38 @@ public partial class AttendanceForm : Form
     private void dgvAttendance_CellValueChanged(object sender, DataGridViewCellEventArgs e)
     {
         UpdateSummary();
+    }
+
+    private void btnSave_Click(object sender, EventArgs e)
+    {
+        ClassGroup? classGroup = cboClass.SelectedItem as ClassGroup;
+        if (classGroup == null || dgvAttendance.Rows.Count == 0)
+        {
+            MessageBox.Show("There is nothing to save.", "Save attendance");
+            return;
+        }
+
+        // build one record for every row in the grid
+        List<AttendanceRecord> records = new List<AttendanceRecord>();
+        foreach (DataGridViewRow row in dgvAttendance.Rows)
+        {
+            AttendanceRecord record = new AttendanceRecord();
+            record.StudentId = Convert.ToString(row.Cells["colStudentId"].Value) ?? "";
+            record.ClassId = classGroup.ClassId;
+            record.AttendanceDate = dtpDate.Value.Date;
+            record.IsPresent = Convert.ToBoolean(row.Cells["colPresent"].Value);
+            records.Add(record);
+        }
+
+        try
+        {
+            attendanceRepository.SaveAll(records);
+            MessageBox.Show("Attendance saved for " + dtpDate.Value.ToShortDateString() + ".", "Save attendance");
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex);
+        }
     }
 
     private void UpdateSummary()

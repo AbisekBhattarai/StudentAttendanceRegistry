@@ -102,13 +102,13 @@ partial class AttendanceForm
         //
         // btnSave
         //
-        btnSave.Enabled = false;
         btnSave.Location = new Point(700, 55);
         btnSave.Name = "btnSave";
         btnSave.Size = new Size(85, 27);
         btnSave.TabIndex = 6;
         btnSave.Text = "Save";
         btnSave.UseVisualStyleBackColor = true;
+        btnSave.Click += btnSave_Click;
         //
         // lblSummary
         //
