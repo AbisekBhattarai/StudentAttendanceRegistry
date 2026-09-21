@@ -9,6 +9,9 @@ public partial class AttendanceForm : Form
     private EnrolmentRepository enrolmentRepository = new EnrolmentRepository();
     private AttendanceRepository attendanceRepository = new AttendanceRepository();
 
+    // true when the chosen class and date already have marks in the database
+    private bool alreadySaved = false;
+
     public AttendanceForm()
     {
         InitializeComponent();
@@ -51,6 +54,7 @@ public partial class AttendanceForm : Form
     private void LoadStudents()
     {
         dgvAttendance.Rows.Clear();
+        alreadySaved = false;
 
         ClassGroup? classGroup = cboClass.SelectedItem as ClassGroup;
         if (classGroup == null)
@@ -63,10 +67,24 @@ public partial class AttendanceForm : Form
         {
             List<Student> students = enrolmentRepository.GetStudentsInClass(classGroup.ClassId);
 
+            // marks that were saved for this class and date before
+            List<AttendanceRecord> saved = attendanceRepository.GetByClassAndDate(classGroup.ClassId, dtpDate.Value);
+            alreadySaved = saved.Count > 0;
+
             foreach (Student student in students)
             {
                 // everyone starts as present so the teacher only has to untick absent students
-                dgvAttendance.Rows.Add(student.StudentId, student.FullName, true);
+                bool isPresent = true;
+
+                foreach (AttendanceRecord record in saved)
+                {
+                    if (record.StudentId == student.StudentId)
+                    {
+                        isPresent = record.IsPresent;
+                    }
+                }
+
+                dgvAttendance.Rows.Add(student.StudentId, student.FullName, isPresent);
             }
 
             if (students.Count == 0)
@@ -140,7 +158,9 @@ public partial class AttendanceForm : Form
         try
         {
             attendanceRepository.SaveAll(records);
+            alreadySaved = true;
             MessageBox.Show("Attendance saved for " + dtpDate.Value.ToShortDateString() + ".", "Save attendance");
+            UpdateSummary();
         }
         catch (Exception ex)
         {
@@ -162,6 +182,11 @@ public partial class AttendanceForm : Form
         }
 
         lblSummary.Text = "Present: " + present + " of " + total + "    Absent: " + (total - present);
+
+        if (alreadySaved)
+        {
+            lblSummary.Text = lblSummary.Text + "    (saved earlier - you can change it and save again)";
+        }
     }
 
     private void ShowError(Exception ex)
