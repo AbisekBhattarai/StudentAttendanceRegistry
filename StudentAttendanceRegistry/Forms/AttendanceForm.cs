@@ -1,5 +1,6 @@
 using StudentAttendanceRegistry.Data;
 using StudentAttendanceRegistry.Models;
+using StudentAttendanceRegistry.Validation;
 
 namespace StudentAttendanceRegistry.Forms;
 
@@ -8,6 +9,7 @@ public partial class AttendanceForm : Form
     private ClassRepository classRepository = new ClassRepository();
     private EnrolmentRepository enrolmentRepository = new EnrolmentRepository();
     private AttendanceRepository attendanceRepository = new AttendanceRepository();
+    private AttendanceValidator validator = new AttendanceValidator();
 
     // true when the chosen class and date already have marks in the database
     private bool alreadySaved = false;
@@ -147,12 +149,27 @@ public partial class AttendanceForm : Form
         List<AttendanceRecord> records = new List<AttendanceRecord>();
         foreach (DataGridViewRow row in dgvAttendance.Rows)
         {
+            // every student must be marked present or absent
+            if (row.Cells["colPresent"].Value == null)
+            {
+                string name = Convert.ToString(row.Cells["colStudentName"].Value) ?? "";
+                MessageBox.Show("Please mark " + name + " as present or absent.", "Save attendance");
+                return;
+            }
+
             AttendanceRecord record = new AttendanceRecord();
             record.StudentId = Convert.ToString(row.Cells["colStudentId"].Value) ?? "";
             record.ClassId = classGroup.ClassId;
             record.AttendanceDate = dtpDate.Value.Date;
             record.IsPresent = Convert.ToBoolean(row.Cells["colPresent"].Value);
             records.Add(record);
+        }
+
+        string message = validator.ValidateAll(records);
+        if (message != "")
+        {
+            MessageBox.Show(message, "Save attendance");
+            return;
         }
 
         try
