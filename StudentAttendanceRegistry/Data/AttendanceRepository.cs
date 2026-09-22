@@ -31,6 +31,31 @@ public class AttendanceRepository
         return records;
     }
 
+    // Returns every mark for one student in one class, oldest date first
+    public List<AttendanceRecord> GetByStudentAndClass(string studentId, int classId)
+    {
+        List<AttendanceRecord> records = new List<AttendanceRecord>();
+
+        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        {
+            string sql = "SELECT AttendanceId, StudentId, ClassId, AttendanceDate, IsPresent FROM Attendance "
+                       + "WHERE StudentId = @studentId AND ClassId = @classId ORDER BY AttendanceDate";
+            MySqlCommand command = new MySqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@studentId", studentId);
+            command.Parameters.AddWithValue("@classId", classId);
+
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    records.Add(ReadRecord(reader));
+                }
+            }
+        }
+
+        return records;
+    }
+
     // True when the class already has marks saved for that date
     public bool HasAttendance(int classId, DateTime date)
     {
