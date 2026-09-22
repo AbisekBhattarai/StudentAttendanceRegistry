@@ -38,6 +38,8 @@ CREATE TABLE Attendance (
     AttendanceDate DATE        NOT NULL,
     IsPresent      BOOLEAN     NOT NULL,
     PRIMARY KEY (AttendanceId),
+    -- only one mark per student, class and date
+    UNIQUE (StudentId, ClassId, AttendanceDate),
     FOREIGN KEY (StudentId) REFERENCES Students (StudentId) ON DELETE CASCADE,
     FOREIGN KEY (ClassId)   REFERENCES Classes (ClassId)    ON DELETE CASCADE
 );
