@@ -34,6 +34,7 @@ partial class HistoryForm
         lblClass = new Label();
         cboClass = new ComboBox();
         lblMessage = new Label();
+        lblStats = new Label();
         dgvHistory = new DataGridView();
         colDate = new DataGridViewTextBoxColumn();
         colStatus = new DataGridViewTextBoxColumn();
@@ -84,6 +85,15 @@ partial class HistoryForm
         lblMessage.Size = new Size(0, 15);
         lblMessage.TabIndex = 4;
         //
+        // lblStats
+        //
+        lblStats.AutoSize = true;
+        lblStats.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        lblStats.Location = new Point(20, 125);
+        lblStats.Name = "lblStats";
+        lblStats.Size = new Size(0, 15);
+        lblStats.TabIndex = 5;
+        //
         // dgvHistory
         //
         dgvHistory.AllowUserToAddRows = false;
@@ -92,14 +102,14 @@ partial class HistoryForm
         dgvHistory.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         dgvHistory.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         dgvHistory.Columns.AddRange(new DataGridViewColumn[] { colDate, colStatus });
-        dgvHistory.Location = new Point(20, 125);
+        dgvHistory.Location = new Point(20, 150);
         dgvHistory.MultiSelect = false;
         dgvHistory.Name = "dgvHistory";
         dgvHistory.ReadOnly = true;
         dgvHistory.RowHeadersVisible = false;
         dgvHistory.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvHistory.Size = new Size(520, 300);
-        dgvHistory.TabIndex = 5;
+        dgvHistory.TabIndex = 6;
         //
         // colDate
         //
@@ -116,14 +126,15 @@ partial class HistoryForm
         // HistoryForm
         //
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(560, 445);
+        ClientSize = new Size(560, 470);
         Controls.Add(dgvHistory);
+        Controls.Add(lblStats);
         Controls.Add(lblMessage);
         Controls.Add(cboClass);
         Controls.Add(lblClass);
         Controls.Add(cboStudent);
         Controls.Add(lblStudent);
-        MinimumSize = new Size(576, 484);
+        MinimumSize = new Size(576, 509);
         Name = "HistoryForm";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "Attendance History";
@@ -140,6 +151,7 @@ partial class HistoryForm
     private Label lblClass;
     private ComboBox cboClass;
     private Label lblMessage;
+    private Label lblStats;
     private DataGridView dgvHistory;
     private DataGridViewTextBoxColumn colDate;
     private DataGridViewTextBoxColumn colStatus;

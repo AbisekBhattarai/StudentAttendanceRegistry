@@ -1,5 +1,6 @@
 using StudentAttendanceRegistry.Data;
 using StudentAttendanceRegistry.Models;
+using StudentAttendanceRegistry.Services;
 
 namespace StudentAttendanceRegistry.Forms;
 
@@ -8,6 +9,7 @@ public partial class HistoryForm : Form
     private StudentRepository studentRepository = new StudentRepository();
     private ClassRepository classRepository = new ClassRepository();
     private AttendanceRepository attendanceRepository = new AttendanceRepository();
+    private AttendanceCalculator calculator = new AttendanceCalculator();
 
     public HistoryForm()
     {
@@ -51,6 +53,7 @@ public partial class HistoryForm : Form
     {
         dgvHistory.Rows.Clear();
         lblMessage.Text = "";
+        lblStats.Text = "";
 
         Student? student = cboStudent.SelectedItem as Student;
         ClassGroup? classGroup = cboClass.SelectedItem as ClassGroup;
@@ -76,11 +79,24 @@ public partial class HistoryForm : Form
             {
                 lblMessage.Text = records.Count + " dates recorded for " + student.FullName + ".";
             }
+
+            ShowStatistics(records);
         }
         catch (Exception ex)
         {
             ShowError(ex);
         }
+    }
+
+    // Shows the attended, absent and percentage figures under the message
+    private void ShowStatistics(List<AttendanceRecord> records)
+    {
+        int attended = calculator.CountAttended(records);
+        int absent = calculator.CountAbsent(records);
+        double percentage = calculator.GetPercentage(records);
+
+        lblStats.Text = "Attended: " + attended + "    Absent: " + absent
+            + "    Attendance: " + percentage.ToString("0.0") + "%";
     }
 
     private void ShowError(Exception ex)
