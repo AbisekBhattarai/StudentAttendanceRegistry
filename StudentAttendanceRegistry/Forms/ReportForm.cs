@@ -11,6 +11,9 @@ public partial class ReportForm : Form
     private AttendanceRepository attendanceRepository = new AttendanceRepository();
     private AttendanceCalculator calculator = new AttendanceCalculator();
 
+    // students under this percentage are highlighted in the report
+    private const double MinimumPercentage = 75;
+
     public ReportForm()
     {
         InitializeComponent();
@@ -61,6 +64,8 @@ public partial class ReportForm : Form
                 return;
             }
 
+            int belowCount = 0;
+
             foreach (Student student in students)
             {
                 List<AttendanceRecord> records = attendanceRepository.GetByStudentAndClass(student.StudentId, classGroup.ClassId);
@@ -74,10 +79,19 @@ public partial class ReportForm : Form
                     percentage = calculator.GetPercentage(records).ToString("0.0") + "%";
                 }
 
-                dgvReport.Rows.Add(student.StudentId, student.FullName, attended, absent, percentage);
+                int rowIndex = dgvReport.Rows.Add(student.StudentId, student.FullName, attended, absent, percentage);
+
+                // colour the row red when the student is below 75%
+                if (records.Count > 0 && calculator.GetPercentage(records) < MinimumPercentage)
+                {
+                    dgvReport.Rows[rowIndex].DefaultCellStyle.BackColor = Color.MistyRose;
+                    dgvReport.Rows[rowIndex].DefaultCellStyle.ForeColor = Color.DarkRed;
+                    belowCount++;
+                }
             }
 
-            lblMessage.Text = students.Count + " students enrolled in " + classGroup.ClassCode + ".";
+            lblMessage.Text = students.Count + " students enrolled in " + classGroup.ClassCode + ", "
+                + belowCount + " below 75% attendance.";
         }
         catch (Exception ex)
         {
