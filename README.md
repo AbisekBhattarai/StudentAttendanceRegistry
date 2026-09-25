@@ -13,7 +13,8 @@ ITS203 Assessment C - Abisek Bhattarai (S2500187)
 
 1. Start **MySQL** in the XAMPP Control Panel.
 2. Run `database/schema.sql` in MySQL Workbench or phpMyAdmin to create the `attendance_registry` database.
-3. In the `StudentAttendanceRegistry` project folder, copy `App.config.example` to `App.config` and change the MySQL user and password if needed (XAMPP default is `root` with no password).
-4. Open `StudentAttendanceRegistry.sln` in Visual Studio and press **F5**.
+3. (Optional) Run `database/sample_data.sql` to add test students, classes and attendance.
+4. In the `StudentAttendanceRegistry` project folder, copy `App.config.example` to `App.config` and change the MySQL user and password if needed (XAMPP default is `root` with no password).
+5. Open `StudentAttendanceRegistry.sln` in Visual Studio and press **F5**.
 
 
