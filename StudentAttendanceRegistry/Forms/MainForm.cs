@@ -30,4 +30,16 @@ public partial class MainForm : Form
         AttendanceForm form = new AttendanceForm();
         form.ShowDialog();
     }
+
+    private void btnViewHistory_Click(object sender, EventArgs e)
+    {
+        HistoryForm form = new HistoryForm();
+        form.ShowDialog();
+    }
+
+    private void btnViewReport_Click(object sender, EventArgs e)
+    {
+        ReportForm form = new ReportForm();
+        form.ShowDialog();
+    }
 }
