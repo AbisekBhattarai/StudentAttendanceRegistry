@@ -4,14 +4,14 @@ using StudentAttendanceRegistry.Models;
 namespace StudentAttendanceRegistry.Data;
 
 // Stores and retrieves attendance marks in the Attendance table
-public class AttendanceRepository
+public class AttendanceRepository : BaseRepository
 {
     // Returns the marks already saved for a class on one date
     public List<AttendanceRecord> GetByClassAndDate(int classId, DateTime date)
     {
         List<AttendanceRecord> records = new List<AttendanceRecord>();
 
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "SELECT AttendanceId, StudentId, ClassId, AttendanceDate, IsPresent FROM Attendance "
                        + "WHERE ClassId = @classId AND AttendanceDate = @date ORDER BY StudentId";
@@ -36,7 +36,7 @@ public class AttendanceRepository
     {
         List<AttendanceRecord> records = new List<AttendanceRecord>();
 
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "SELECT AttendanceId, StudentId, ClassId, AttendanceDate, IsPresent FROM Attendance "
                        + "WHERE StudentId = @studentId AND ClassId = @classId ORDER BY AttendanceDate";
@@ -59,7 +59,7 @@ public class AttendanceRepository
     // True when the class already has marks saved for that date
     public bool HasAttendance(int classId, DateTime date)
     {
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "SELECT COUNT(*) FROM Attendance WHERE ClassId = @classId AND AttendanceDate = @date";
             MySqlCommand command = new MySqlCommand(sql, connection);
@@ -74,7 +74,7 @@ public class AttendanceRepository
     // Adds a new mark, or changes the old one if the student was already marked that day
     public void Save(AttendanceRecord record)
     {
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string updateSql = "UPDATE Attendance SET IsPresent = @isPresent "
                              + "WHERE StudentId = @studentId AND ClassId = @classId AND AttendanceDate = @date";

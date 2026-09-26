@@ -3,12 +3,12 @@ using StudentAttendanceRegistry.Models;
 namespace StudentAttendanceRegistry.Validation;
 
 // Checks student details before they are saved
-public class StudentValidator
+public class StudentValidator : Validator<Student>
 {
     // Returns an empty string when the student is valid, otherwise the message to show
-    public string Validate(Student student)
+    public override string Validate(Student student)
     {
-        if (string.IsNullOrWhiteSpace(student.StudentId))
+        if (IsBlank(student.StudentId))
         {
             return "Please enter a student id.";
         }
@@ -18,12 +18,12 @@ public class StudentValidator
             return "Student id must be the letter S followed by 7 numbers, for example S2500187.";
         }
 
-        if (string.IsNullOrWhiteSpace(student.FirstName))
+        if (IsBlank(student.FirstName))
         {
             return "Please enter a first name.";
         }
 
-        if (string.IsNullOrWhiteSpace(student.LastName))
+        if (IsBlank(student.LastName))
         {
             return "Please enter a last name.";
         }

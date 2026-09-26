@@ -1,5 +1,6 @@
 using StudentAttendanceRegistry.Data;
 using StudentAttendanceRegistry.Models;
+using StudentAttendanceRegistry.Services;
 using StudentAttendanceRegistry.Validation;
 
 namespace StudentAttendanceRegistry.Forms;
@@ -204,7 +205,6 @@ public partial class ClassForm : Form
 
     private void ShowError(Exception ex)
     {
-        MessageBox.Show("Could not reach the database. Check that MySQL is running in XAMPP."
-            + Environment.NewLine + Environment.NewLine + ex.Message, "Database error");
+        MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error");
     }
 }

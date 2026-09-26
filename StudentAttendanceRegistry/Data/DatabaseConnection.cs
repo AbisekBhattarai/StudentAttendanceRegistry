@@ -12,7 +12,8 @@ public class DatabaseConnection
         ConnectionStringSettings setting = ConfigurationManager.ConnectionStrings["AttendanceDb"];
         if (setting == null)
         {
-            throw new Exception("No connection string called AttendanceDb was found in App.config.");
+            throw new DatabaseException("No connection string called AttendanceDb was found in App.config. "
+                + "Copy App.config.example to App.config and add your MySQL details.");
         }
         return setting.ConnectionString;
     }
@@ -21,7 +22,18 @@ public class DatabaseConnection
     public static MySqlConnection GetOpenConnection()
     {
         MySqlConnection connection = new MySqlConnection(GetConnectionString());
-        connection.Open();
+        try
+        {
+            connection.Open();
+        }
+        catch (MySqlException ex)
+        {
+            // MySQL is off or login is wrong
+            connection.Dispose();
+            throw new DatabaseException("Could not connect to MySQL. Check that MySQL is running in XAMPP "
+                + "and that the details in App.config are correct." + Environment.NewLine + Environment.NewLine
+                + ex.Message, ex);
+        }
         return connection;
     }
 

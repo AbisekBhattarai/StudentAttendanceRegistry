@@ -101,7 +101,6 @@ public partial class HistoryForm : Form
 
     private void ShowError(Exception ex)
     {
-        MessageBox.Show("Could not reach the database. Check that MySQL is running in XAMPP."
-            + Environment.NewLine + Environment.NewLine + ex.Message, "Database error");
+        MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error");
     }
 }

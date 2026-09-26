@@ -4,13 +4,13 @@ using StudentAttendanceRegistry.Models;
 namespace StudentAttendanceRegistry.Data;
 
 // Stores and retrieves students in the Students table
-public class StudentRepository
+public class StudentRepository : BaseRepository
 {
     public List<Student> GetAll()
     {
         List<Student> students = new List<Student>();
 
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "SELECT StudentId, FirstName, LastName, Email FROM Students ORDER BY StudentId";
             MySqlCommand command = new MySqlCommand(sql, connection);
@@ -29,7 +29,7 @@ public class StudentRepository
 
     public Student? GetById(string studentId)
     {
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "SELECT StudentId, FirstName, LastName, Email FROM Students WHERE StudentId = @id";
             MySqlCommand command = new MySqlCommand(sql, connection);
@@ -52,7 +52,7 @@ public class StudentRepository
     {
         List<Student> students = new List<Student>();
 
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "SELECT StudentId, FirstName, LastName, Email FROM Students "
                        + "WHERE StudentId LIKE @text OR FirstName LIKE @text OR LastName LIKE @text "
@@ -74,7 +74,7 @@ public class StudentRepository
 
     public void Add(Student student)
     {
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "INSERT INTO Students (StudentId, FirstName, LastName, Email) "
                        + "VALUES (@id, @first, @last, @email)";
@@ -89,7 +89,7 @@ public class StudentRepository
 
     public void Update(Student student)
     {
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "UPDATE Students SET FirstName = @first, LastName = @last, Email = @email "
                        + "WHERE StudentId = @id";
@@ -104,7 +104,7 @@ public class StudentRepository
 
     public void Delete(string studentId)
     {
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "DELETE FROM Students WHERE StudentId = @id";
             MySqlCommand command = new MySqlCommand(sql, connection);
@@ -117,18 +117,5 @@ public class StudentRepository
     public bool Exists(string studentId)
     {
         return GetById(studentId) != null;
-    }
-
-    private Student ReadStudent(MySqlDataReader reader)
-    {
-        Student student = new Student();
-        student.StudentId = reader.GetString("StudentId");
-        student.FirstName = reader.GetString("FirstName");
-        student.LastName = reader.GetString("LastName");
-        if (!reader.IsDBNull(reader.GetOrdinal("Email")))
-        {
-            student.Email = reader.GetString("Email");
-        }
-        return student;
     }
 }

@@ -3,7 +3,7 @@ using StudentAttendanceRegistry.Models;
 namespace StudentAttendanceRegistry.Validation;
 
 // Checks attendance entries before they are saved
-public class AttendanceValidator
+public class AttendanceValidator : Validator<AttendanceRecord>
 {
     // Returns an empty string when the date is fine, otherwise the message to show
     public string ValidateDate(DateTime date)
@@ -16,6 +16,22 @@ public class AttendanceValidator
         return "";
     }
 
+    // Checks one attendance record
+    public override string Validate(AttendanceRecord record)
+    {
+        if (IsBlank(record.StudentId))
+        {
+            return "One of the rows has no student id.";
+        }
+
+        if (record.ClassId <= 0)
+        {
+            return "Please choose a class.";
+        }
+
+        return ValidateDate(record.AttendanceDate);
+    }
+
     // Returns an empty string when every record is valid, otherwise the message to show
     public string ValidateAll(List<AttendanceRecord> records)
     {
@@ -26,20 +42,10 @@ public class AttendanceValidator
 
         foreach (AttendanceRecord record in records)
         {
-            if (string.IsNullOrWhiteSpace(record.StudentId))
+            string message = Validate(record);
+            if (message != "")
             {
-                return "One of the rows has no student id.";
-            }
-
-            if (record.ClassId <= 0)
-            {
-                return "Please choose a class.";
-            }
-
-            string dateMessage = ValidateDate(record.AttendanceDate);
-            if (dateMessage != "")
-            {
-                return dateMessage;
+                return message;
             }
         }
 

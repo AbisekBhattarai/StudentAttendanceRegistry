@@ -4,13 +4,13 @@ using StudentAttendanceRegistry.Models;
 namespace StudentAttendanceRegistry.Data;
 
 // Stores and retrieves classes in the Classes table
-public class ClassRepository
+public class ClassRepository : BaseRepository
 {
     public List<ClassGroup> GetAll()
     {
         List<ClassGroup> classes = new List<ClassGroup>();
 
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "SELECT ClassId, ClassCode, ClassName, Teacher FROM Classes ORDER BY ClassCode";
             MySqlCommand command = new MySqlCommand(sql, connection);
@@ -29,7 +29,7 @@ public class ClassRepository
 
     public ClassGroup? GetById(int classId)
     {
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "SELECT ClassId, ClassCode, ClassName, Teacher FROM Classes WHERE ClassId = @id";
             MySqlCommand command = new MySqlCommand(sql, connection);
@@ -52,7 +52,7 @@ public class ClassRepository
     {
         List<ClassGroup> classes = new List<ClassGroup>();
 
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "SELECT ClassId, ClassCode, ClassName, Teacher FROM Classes "
                        + "WHERE ClassCode LIKE @text OR ClassName LIKE @text OR Teacher LIKE @text "
@@ -74,7 +74,7 @@ public class ClassRepository
 
     public void Add(ClassGroup classGroup)
     {
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "INSERT INTO Classes (ClassCode, ClassName, Teacher) "
                        + "VALUES (@code, @name, @teacher)";
@@ -88,7 +88,7 @@ public class ClassRepository
 
     public void Update(ClassGroup classGroup)
     {
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "UPDATE Classes SET ClassCode = @code, ClassName = @name, Teacher = @teacher "
                        + "WHERE ClassId = @id";
@@ -103,7 +103,7 @@ public class ClassRepository
 
     public void Delete(int classId)
     {
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "DELETE FROM Classes WHERE ClassId = @id";
             MySqlCommand command = new MySqlCommand(sql, connection);
@@ -116,7 +116,7 @@ public class ClassRepository
     // Pass the class's own id when updating so it does not count itself
     public bool CodeExists(string classCode, int ignoreClassId)
     {
-        using (MySqlConnection connection = DatabaseConnection.GetOpenConnection())
+        using (MySqlConnection connection = OpenConnection())
         {
             string sql = "SELECT COUNT(*) FROM Classes WHERE ClassCode = @code AND ClassId <> @id";
             MySqlCommand command = new MySqlCommand(sql, connection);
