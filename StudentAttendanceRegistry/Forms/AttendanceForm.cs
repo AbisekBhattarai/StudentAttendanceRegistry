@@ -18,6 +18,7 @@ public partial class AttendanceForm : Form
     public AttendanceForm()
     {
         InitializeComponent();
+        Theme.Apply(this, "Tick the students who were present, then save");
     }
 
     private void AttendanceForm_Load(object sender, EventArgs e)

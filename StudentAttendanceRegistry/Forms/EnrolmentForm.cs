@@ -12,6 +12,7 @@ public partial class EnrolmentForm : Form
     public EnrolmentForm()
     {
         InitializeComponent();
+        Theme.Apply(this, "Choose a class to enrol or remove students");
     }
 
     private void EnrolmentForm_Load(object sender, EventArgs e)

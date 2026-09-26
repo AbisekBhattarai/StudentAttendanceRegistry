@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace StudentAttendanceRegistry.Models;
 
 // Stores the details of one student
@@ -9,18 +11,21 @@ public class Student
     private string email = "";
 
     // Saves the id in capitals
+    [DisplayName("Student ID")]
     public string StudentId
     {
         get { return studentId; }
         set { studentId = Clean(value).ToUpper(); }
     }
 
+    [DisplayName("First Name")]
     public string FirstName
     {
         get { return firstName; }
         set { firstName = Clean(value); }
     }
 
+    [DisplayName("Last Name")]
     public string LastName
     {
         get { return lastName; }

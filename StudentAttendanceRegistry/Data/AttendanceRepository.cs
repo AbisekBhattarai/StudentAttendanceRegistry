@@ -56,6 +56,64 @@ public class AttendanceRepository : BaseRepository
         return records;
     }
 
+    // Returns every mark saved on one date, for all classes
+    public List<AttendanceRecord> GetByDate(DateTime date)
+    {
+        List<AttendanceRecord> records = new List<AttendanceRecord>();
+
+        using (MySqlConnection connection = OpenConnection())
+        {
+            string sql = "SELECT AttendanceId, StudentId, ClassId, AttendanceDate, IsPresent FROM Attendance "
+                       + "WHERE AttendanceDate = @date";
+            MySqlCommand command = new MySqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@date", date.Date);
+
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    records.Add(ReadRecord(reader));
+                }
+            }
+        }
+
+        return records;
+    }
+
+    // Returns the attended and total counts for every student in every class
+    public List<AttendanceSummary> GetSummaries()
+    {
+        List<AttendanceSummary> summaries = new List<AttendanceSummary>();
+
+        using (MySqlConnection connection = OpenConnection())
+        {
+            string sql = "SELECT s.StudentId, s.FirstName, s.LastName, c.ClassCode, "
+                       + "SUM(a.IsPresent) AS Attended, COUNT(*) AS Total "
+                       + "FROM Attendance a "
+                       + "JOIN Students s ON s.StudentId = a.StudentId "
+                       + "JOIN Classes c ON c.ClassId = a.ClassId "
+                       + "GROUP BY s.StudentId, s.FirstName, s.LastName, c.ClassCode "
+                       + "ORDER BY s.StudentId, c.ClassCode";
+            MySqlCommand command = new MySqlCommand(sql, connection);
+
+            using (MySqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    AttendanceSummary summary = new AttendanceSummary();
+                    summary.StudentId = reader.GetString("StudentId");
+                    summary.StudentName = reader.GetString("FirstName") + " " + reader.GetString("LastName");
+                    summary.ClassCode = reader.GetString("ClassCode");
+                    summary.Attended = Convert.ToInt32(reader["Attended"]);
+                    summary.Total = Convert.ToInt32(reader["Total"]);
+                    summaries.Add(summary);
+                }
+            }
+        }
+
+        return summaries;
+    }
+
     // True when the class already has marks saved for that date
     public bool HasAttendance(int classId, DateTime date)
     {

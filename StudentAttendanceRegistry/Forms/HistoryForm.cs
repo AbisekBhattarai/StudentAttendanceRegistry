@@ -14,6 +14,7 @@ public partial class HistoryForm : Form
     public HistoryForm()
     {
         InitializeComponent();
+        Theme.Apply(this, "See every attendance mark for one student in a class");
     }
 
     private void HistoryForm_Load(object sender, EventArgs e)

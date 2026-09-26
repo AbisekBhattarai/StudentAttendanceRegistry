@@ -11,12 +11,10 @@ public partial class ReportForm : Form
     private AttendanceRepository attendanceRepository = new AttendanceRepository();
     private AttendanceCalculator calculator = new AttendanceCalculator();
 
-    // students under this percentage are highlighted in the report
-    private const double MinimumPercentage = 75;
-
     public ReportForm()
     {
         InitializeComponent();
+        Theme.Apply(this, "Attendance totals for every student in a class");
     }
 
     private void ReportForm_Load(object sender, EventArgs e)
@@ -82,7 +80,7 @@ public partial class ReportForm : Form
                 int rowIndex = dgvReport.Rows.Add(student.StudentId, student.FullName, attended, absent, percentage);
 
                 // colour the row red when the student is below 75%
-                if (records.Count > 0 && calculator.GetPercentage(records) < MinimumPercentage)
+                if (records.Count > 0 && calculator.GetPercentage(records) < AttendanceCalculator.MinimumPercentage)
                 {
                     dgvReport.Rows[rowIndex].DefaultCellStyle.BackColor = Color.MistyRose;
                     dgvReport.Rows[rowIndex].DefaultCellStyle.ForeColor = Color.DarkRed;

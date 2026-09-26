@@ -74,8 +74,9 @@ partial class ReportForm
         lblKey.AutoSize = true;
         lblKey.BackColor = Color.MistyRose;
         lblKey.ForeColor = Color.DarkRed;
-        lblKey.Location = new Point(410, 60);
+        lblKey.Location = new Point(355, 58);
         lblKey.Name = "lblKey";
+        lblKey.Padding = new Padding(6, 2, 6, 2);
         lblKey.Size = new Size(185, 15);
         lblKey.TabIndex = 4;
         lblKey.Text = "Red rows: below 75% attendance";
@@ -105,7 +106,7 @@ partial class ReportForm
         //
         // colName
         //
-        colName.FillWeight = 180F;
+        colName.FillWeight = 160F;
         colName.HeaderText = "Name";
         colName.Name = "colName";
         colName.ReadOnly = true;
@@ -124,6 +125,7 @@ partial class ReportForm
         //
         // colPercentage
         //
+        colPercentage.FillWeight = 130F;
         colPercentage.HeaderText = "Attendance %";
         colPercentage.Name = "colPercentage";
         colPercentage.ReadOnly = true;

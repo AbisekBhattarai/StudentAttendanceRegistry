@@ -58,7 +58,7 @@ partial class AttendanceForm
         cboClass.DropDownStyle = ComboBoxStyle.DropDownList;
         cboClass.Location = new Point(110, 22);
         cboClass.Name = "cboClass";
-        cboClass.Size = new Size(470, 23);
+        cboClass.Size = new Size(420, 23);
         cboClass.TabIndex = 1;
         cboClass.SelectedIndexChanged += cboClass_SelectedIndexChanged;
         //
@@ -82,9 +82,9 @@ partial class AttendanceForm
         //
         // btnAllPresent
         //
-        btnAllPresent.Location = new Point(610, 20);
+        btnAllPresent.Location = new Point(560, 20);
         btnAllPresent.Name = "btnAllPresent";
-        btnAllPresent.Size = new Size(85, 27);
+        btnAllPresent.Size = new Size(110, 27);
         btnAllPresent.TabIndex = 4;
         btnAllPresent.Text = "All Present";
         btnAllPresent.UseVisualStyleBackColor = true;
@@ -92,9 +92,9 @@ partial class AttendanceForm
         //
         // btnAllAbsent
         //
-        btnAllAbsent.Location = new Point(700, 20);
+        btnAllAbsent.Location = new Point(675, 20);
         btnAllAbsent.Name = "btnAllAbsent";
-        btnAllAbsent.Size = new Size(85, 27);
+        btnAllAbsent.Size = new Size(110, 27);
         btnAllAbsent.TabIndex = 5;
         btnAllAbsent.Text = "All Absent";
         btnAllAbsent.UseVisualStyleBackColor = true;
@@ -102,9 +102,9 @@ partial class AttendanceForm
         //
         // btnSave
         //
-        btnSave.Location = new Point(700, 55);
+        btnSave.Location = new Point(675, 55);
         btnSave.Name = "btnSave";
-        btnSave.Size = new Size(85, 27);
+        btnSave.Size = new Size(110, 27);
         btnSave.TabIndex = 6;
         btnSave.Text = "Save";
         btnSave.UseVisualStyleBackColor = true;

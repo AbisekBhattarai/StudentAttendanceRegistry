@@ -1,21 +1,18 @@
 using StudentAttendanceRegistry.Data;
 using StudentAttendanceRegistry.Models;
 using StudentAttendanceRegistry.Services;
-using StudentAttendanceRegistry.Validation;
 
 namespace StudentAttendanceRegistry.Forms;
 
+// Lists the classes; adding and editing happen in ClassEditForm
 public partial class ClassForm : Form
 {
     private ClassRepository repository = new ClassRepository();
-    private ClassValidator validator = new ClassValidator();
-
-    // Id of the class picked in the grid, 0 when nothing is picked
-    private int selectedClassId = 0;
 
     public ClassForm()
     {
         InitializeComponent();
+        Theme.Apply(this, "Add, edit and remove classes");
     }
 
     private void ClassForm_Load(object sender, EventArgs e)
@@ -23,11 +20,21 @@ public partial class ClassForm : Form
         LoadClasses();
     }
 
+    // Shows the classes that match the search box (all of them when it is empty)
     private void LoadClasses()
     {
         try
         {
-            ShowClasses(repository.GetAll());
+            List<ClassGroup> classes = repository.Search(txtSearch.Text.Trim());
+            dgvClasses.DataSource = classes;
+            lblCount.Text = classes.Count + " classes";
+
+            // the user does not need to see the database id
+            DataGridViewColumn? idColumn = dgvClasses.Columns["ClassId"];
+            if (idColumn != null)
+            {
+                idColumn.Visible = false;
+            }
         }
         catch (Exception ex)
         {
@@ -35,93 +42,65 @@ public partial class ClassForm : Form
         }
     }
 
-    private void ShowClasses(List<ClassGroup> classes)
+    private void txtSearch_TextChanged(object sender, EventArgs e)
     {
-        dgvClasses.DataSource = classes;
-
-        // the user does not need to see the database id
-        DataGridViewColumn? idColumn = dgvClasses.Columns["ClassId"];
-        if (idColumn != null)
-        {
-            idColumn.Visible = false;
-        }
+        LoadClasses();
     }
 
     private void btnAdd_Click(object sender, EventArgs e)
     {
-        ClassGroup classGroup = ReadFormFields();
-
-        string message = validator.Validate(classGroup);
-        if (message != "")
+        using (ClassEditForm dialog = new ClassEditForm(null))
         {
-            MessageBox.Show(message, "Please check the details");
-            return;
-        }
-
-        try
-        {
-            if (repository.CodeExists(classGroup.ClassCode, 0))
+            if (dialog.ShowDialog(ParentForm) == DialogResult.OK)
             {
-                MessageBox.Show("A class with that code already exists.", "Duplicate class");
-                return;
+                LoadClasses();
             }
-
-            repository.Add(classGroup);
-            LoadClasses();
-            ClearFields();
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex);
         }
     }
 
-    private void btnUpdate_Click(object sender, EventArgs e)
+    private void btnEdit_Click(object sender, EventArgs e)
     {
-        if (selectedClassId == 0)
+        EditSelectedClass();
+    }
+
+    private void dgvClasses_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+    {
+        // ignore double clicks on the header row
+        if (e.RowIndex >= 0)
+        {
+            EditSelectedClass();
+        }
+    }
+
+    private void EditSelectedClass()
+    {
+        ClassGroup? classGroup = GetSelectedClass();
+        if (classGroup == null)
         {
             MessageBox.Show("Please choose a class from the list first.", "No class selected");
             return;
         }
 
-        ClassGroup classGroup = ReadFormFields();
-        classGroup.ClassId = selectedClassId;
-
-        string message = validator.Validate(classGroup);
-        if (message != "")
+        using (ClassEditForm dialog = new ClassEditForm(classGroup))
         {
-            MessageBox.Show(message, "Please check the details");
-            return;
-        }
-
-        try
-        {
-            if (repository.CodeExists(classGroup.ClassCode, classGroup.ClassId))
+            if (dialog.ShowDialog(ParentForm) == DialogResult.OK)
             {
-                MessageBox.Show("Another class already uses that code.", "Duplicate class");
-                return;
+                LoadClasses();
             }
-
-            repository.Update(classGroup);
-            LoadClasses();
-            ClearFields();
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex);
         }
     }
 
     private void btnDelete_Click(object sender, EventArgs e)
     {
-        if (selectedClassId == 0)
+        ClassGroup? classGroup = GetSelectedClass();
+        if (classGroup == null)
         {
             MessageBox.Show("Please choose a class from the list first.", "No class selected");
             return;
         }
 
         // deleting a class also removes its enrolments and attendance (ON DELETE CASCADE)
-        DialogResult answer = MessageBox.Show("Delete class " + txtClassCode.Text.Trim()
+        DialogResult answer = MessageBox.Show("Delete class " + classGroup.ClassCode
             + "? Its enrolments and attendance records will also be deleted.", "Confirm delete",
             MessageBoxButtons.YesNo);
         if (answer != DialogResult.Yes)
@@ -131,9 +110,8 @@ public partial class ClassForm : Form
 
         try
         {
-            repository.Delete(selectedClassId);
+            repository.Delete(classGroup.ClassId);
             LoadClasses();
-            ClearFields();
         }
         catch (Exception ex)
         {
@@ -141,66 +119,13 @@ public partial class ClassForm : Form
         }
     }
 
-    private void btnSearch_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            ShowClasses(repository.Search(txtSearch.Text.Trim()));
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex);
-        }
-    }
-
-    private void btnShowAll_Click(object sender, EventArgs e)
-    {
-        txtSearch.Text = "";
-        LoadClasses();
-    }
-
-    private void btnClear_Click(object sender, EventArgs e)
-    {
-        ClearFields();
-    }
-
-    // Copies the details of the row the user clicked into the text boxes
-    private void dgvClasses_SelectionChanged(object sender, EventArgs e)
+    private ClassGroup? GetSelectedClass()
     {
         if (dgvClasses.SelectedRows.Count == 0)
         {
-            return;
+            return null;
         }
-
-        ClassGroup? classGroup = dgvClasses.SelectedRows[0].DataBoundItem as ClassGroup;
-        if (classGroup == null)
-        {
-            return;
-        }
-
-        selectedClassId = classGroup.ClassId;
-        txtClassCode.Text = classGroup.ClassCode;
-        txtClassName.Text = classGroup.ClassName;
-        txtTeacher.Text = classGroup.Teacher;
-    }
-
-    private ClassGroup ReadFormFields()
-    {
-        ClassGroup classGroup = new ClassGroup();
-        classGroup.ClassCode = txtClassCode.Text.Trim().ToUpper();
-        classGroup.ClassName = txtClassName.Text.Trim();
-        classGroup.Teacher = txtTeacher.Text.Trim();
-        return classGroup;
-    }
-
-    private void ClearFields()
-    {
-        selectedClassId = 0;
-        txtClassCode.Text = "";
-        txtClassName.Text = "";
-        txtTeacher.Text = "";
-        dgvClasses.ClearSelection();
-        txtClassCode.Focus();
+        return dgvClasses.SelectedRows[0].DataBoundItem as ClassGroup;
     }
 
     private void ShowError(Exception ex)

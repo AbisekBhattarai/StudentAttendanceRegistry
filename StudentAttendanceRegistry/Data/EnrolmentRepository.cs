@@ -56,6 +56,16 @@ public class EnrolmentRepository : BaseRepository
         return students;
     }
 
+    // Counts all enrolments, used on the dashboard
+    public int CountAll()
+    {
+        using (MySqlConnection connection = OpenConnection())
+        {
+            MySqlCommand command = new MySqlCommand("SELECT COUNT(*) FROM Enrolments", connection);
+            return Convert.ToInt32(command.ExecuteScalar());
+        }
+    }
+
     public bool IsEnrolled(string studentId, int classId)
     {
         using (MySqlConnection connection = OpenConnection())

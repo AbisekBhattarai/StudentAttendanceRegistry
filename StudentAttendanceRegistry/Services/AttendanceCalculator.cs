@@ -5,6 +5,9 @@ namespace StudentAttendanceRegistry.Services;
 // Calculates attended, absent and percentage figures for a student
 public class AttendanceCalculator
 {
+    // Students under this percentage are shown as low attendance
+    public const double MinimumPercentage = 75;
+
     // Counts the records marked as present
     public int CountAttended(List<AttendanceRecord> records)
     {

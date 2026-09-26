@@ -1,18 +1,18 @@
 using StudentAttendanceRegistry.Data;
 using StudentAttendanceRegistry.Models;
 using StudentAttendanceRegistry.Services;
-using StudentAttendanceRegistry.Validation;
 
 namespace StudentAttendanceRegistry.Forms;
 
+// Lists the students; adding and editing happen in StudentEditForm
 public partial class StudentForm : Form
 {
     private StudentRepository repository = new StudentRepository();
-    private StudentValidator validator = new StudentValidator();
 
     public StudentForm()
     {
         InitializeComponent();
+        Theme.Apply(this, "Add, edit and remove students");
     }
 
     private void StudentForm_Load(object sender, EventArgs e)
@@ -20,11 +20,20 @@ public partial class StudentForm : Form
         LoadStudents();
     }
 
+    // Shows the students that match the search box (all of them when it is empty)
     private void LoadStudents()
     {
         try
         {
-            ShowStudents(repository.GetAll());
+            List<Student> students = repository.Search(txtSearch.Text.Trim());
+            dgvStudents.DataSource = students;
+            lblCount.Text = students.Count + " students";
+
+            DataGridViewColumn? fullNameColumn = dgvStudents.Columns["FullName"];
+            if (fullNameColumn != null)
+            {
+                fullNameColumn.Visible = false;
+            }
         }
         catch (Exception ex)
         {
@@ -32,87 +41,65 @@ public partial class StudentForm : Form
         }
     }
 
-    private void ShowStudents(List<Student> students)
+    private void txtSearch_TextChanged(object sender, EventArgs e)
     {
-        dgvStudents.DataSource = students;
-
-        DataGridViewColumn? fullNameColumn = dgvStudents.Columns["FullName"];
-        if (fullNameColumn != null)
-        {
-            fullNameColumn.Visible = false;
-        }
+        LoadStudents();
     }
 
     private void btnAdd_Click(object sender, EventArgs e)
     {
-        Student student = ReadFormFields();
-
-        string message = validator.Validate(student);
-        if (message != "")
+        using (StudentEditForm dialog = new StudentEditForm(null))
         {
-            MessageBox.Show(message, "Please check the details");
-            return;
-        }
-
-        try
-        {
-            if (repository.Exists(student.StudentId))
+            if (dialog.ShowDialog(ParentForm) == DialogResult.OK)
             {
-                MessageBox.Show("A student with that id already exists.", "Duplicate student");
-                return;
+                LoadStudents();
             }
-
-            repository.Add(student);
-            LoadStudents();
-            ClearFields();
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex);
         }
     }
 
-    private void btnUpdate_Click(object sender, EventArgs e)
+    private void btnEdit_Click(object sender, EventArgs e)
     {
-        Student student = ReadFormFields();
+        EditSelectedStudent();
+    }
 
-        string message = validator.Validate(student);
-        if (message != "")
+    private void dgvStudents_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+    {
+        // ignore double clicks on the header row
+        if (e.RowIndex >= 0)
         {
-            MessageBox.Show(message, "Please check the details");
-            return;
-        }
-
-        try
-        {
-            if (!repository.Exists(student.StudentId))
-            {
-                MessageBox.Show("There is no student with that id.", "Student not found");
-                return;
-            }
-
-            repository.Update(student);
-            LoadStudents();
-            ClearFields();
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex);
+            EditSelectedStudent();
         }
     }
 
-    private void btnDelete_Click(object sender, EventArgs e)
+    private void EditSelectedStudent()
     {
-        string studentId = txtStudentId.Text.Trim();
-
-        if (studentId == "")
+        Student? student = GetSelectedStudent();
+        if (student == null)
         {
             MessageBox.Show("Please choose a student from the list first.", "No student selected");
             return;
         }
 
-        DialogResult answer = MessageBox.Show("Delete student " + studentId + "?", "Confirm delete",
-            MessageBoxButtons.YesNo);
+        using (StudentEditForm dialog = new StudentEditForm(student))
+        {
+            if (dialog.ShowDialog(ParentForm) == DialogResult.OK)
+            {
+                LoadStudents();
+            }
+        }
+    }
+
+    private void btnDelete_Click(object sender, EventArgs e)
+    {
+        Student? student = GetSelectedStudent();
+        if (student == null)
+        {
+            MessageBox.Show("Please choose a student from the list first.", "No student selected");
+            return;
+        }
+
+        DialogResult answer = MessageBox.Show("Delete " + student.FullName + " (" + student.StudentId + ")? "
+            + "Their enrolments and attendance will also be deleted.", "Confirm delete", MessageBoxButtons.YesNo);
         if (answer != DialogResult.Yes)
         {
             return;
@@ -120,9 +107,8 @@ public partial class StudentForm : Form
 
         try
         {
-            repository.Delete(studentId);
+            repository.Delete(student.StudentId);
             LoadStudents();
-            ClearFields();
         }
         catch (Exception ex)
         {
@@ -130,66 +116,13 @@ public partial class StudentForm : Form
         }
     }
 
-    private void btnSearch_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            ShowStudents(repository.Search(txtSearch.Text.Trim()));
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex);
-        }
-    }
-
-    private void btnShowAll_Click(object sender, EventArgs e)
-    {
-        txtSearch.Text = "";
-        LoadStudents();
-    }
-
-    private void btnClear_Click(object sender, EventArgs e)
-    {
-        ClearFields();
-    }
-
-    // Copies the details of the row the user clicked into the text boxes
-    private void dgvStudents_SelectionChanged(object sender, EventArgs e)
+    private Student? GetSelectedStudent()
     {
         if (dgvStudents.SelectedRows.Count == 0)
         {
-            return;
+            return null;
         }
-
-        Student? student = dgvStudents.SelectedRows[0].DataBoundItem as Student;
-        if (student == null)
-        {
-            return;
-        }
-
-        txtStudentId.Text = student.StudentId;
-        txtFirstName.Text = student.FirstName;
-        txtLastName.Text = student.LastName;
-        txtEmail.Text = student.Email;
-    }
-
-    private Student ReadFormFields()
-    {
-        Student student = new Student();
-        student.StudentId = txtStudentId.Text.Trim().ToUpper();
-        student.FirstName = txtFirstName.Text.Trim();
-        student.LastName = txtLastName.Text.Trim();
-        student.Email = txtEmail.Text.Trim();
-        return student;
-    }
-
-    private void ClearFields()
-    {
-        txtStudentId.Text = "";
-        txtFirstName.Text = "";
-        txtLastName.Text = "";
-        txtEmail.Text = "";
-        txtStudentId.Focus();
+        return dgvStudents.SelectedRows[0].DataBoundItem as Student;
     }
 
     private void ShowError(Exception ex)
