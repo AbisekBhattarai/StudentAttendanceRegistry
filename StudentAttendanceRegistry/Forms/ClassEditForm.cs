@@ -23,6 +23,10 @@ public partial class ClassEditForm : Form
         lblSubtitle.ForeColor = Theme.MutedText;
         lblError.ForeColor = Theme.Danger;
 
+        toolTip.SetToolTip(txtClassCode, "Must be different from every other class");
+        toolTip.SetToolTip(btnSave, "Save the class (Enter)");
+        toolTip.SetToolTip(btnCancel, "Close without saving (Esc)");
+
         if (classGroup != null)
         {
             classId = classGroup.ClassId;

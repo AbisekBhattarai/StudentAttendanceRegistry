@@ -29,6 +29,7 @@ partial class ClassForm
     private void InitializeComponent()
     {
         components = new System.ComponentModel.Container();
+        toolTip = new ToolTip(components);
         txtSearch = new TextBox();
         lblCount = new Label();
         btnEdit = new Button();
@@ -135,4 +136,5 @@ partial class ClassForm
     private Button btnDelete;
     private Button btnAdd;
     private DataGridView dgvClasses;
+    private ToolTip toolTip;
 }

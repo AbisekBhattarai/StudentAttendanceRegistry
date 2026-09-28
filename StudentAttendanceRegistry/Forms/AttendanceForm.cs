@@ -19,6 +19,33 @@ public partial class AttendanceForm : Form
     {
         InitializeComponent();
         Theme.Apply(this, "Tick the students who were present, then save");
+
+        toolTip.SetToolTip(cboClass, "The class you are taking attendance for");
+        toolTip.SetToolTip(dtpDate, "Pick an earlier date to see or change saved marks");
+        toolTip.SetToolTip(btnAllPresent, "Tick every student (Ctrl+P)");
+        toolTip.SetToolTip(btnAllAbsent, "Untick every student (Ctrl+U)");
+        toolTip.SetToolTip(btnSave, "Save the marks for this class and date (Ctrl+S)");
+    }
+
+    // Keyboard shortcuts for this page
+    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+    {
+        if (keyData == (Keys.Control | Keys.S))
+        {
+            btnSave.PerformClick();
+            return true;
+        }
+        if (keyData == (Keys.Control | Keys.P))
+        {
+            SetAll(true);
+            return true;
+        }
+        if (keyData == (Keys.Control | Keys.U))
+        {
+            SetAll(false);
+            return true;
+        }
+        return base.ProcessCmdKey(ref msg, keyData);
     }
 
     private void AttendanceForm_Load(object sender, EventArgs e)

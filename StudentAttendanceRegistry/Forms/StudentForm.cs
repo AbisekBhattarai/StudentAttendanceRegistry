@@ -13,6 +13,40 @@ public partial class StudentForm : Form
     {
         InitializeComponent();
         Theme.Apply(this, "Add, edit and remove students");
+
+        toolTip.SetToolTip(txtSearch, "Type part of a student ID or name (Ctrl+F)");
+        toolTip.SetToolTip(btnAdd, "Add a new student (Ctrl+N)");
+        toolTip.SetToolTip(btnEdit, "Edit the selected student (Enter or double-click a row)");
+        toolTip.SetToolTip(btnDelete, "Delete the selected student (Delete key)");
+    }
+
+    // Keyboard shortcuts for this page
+    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+    {
+        if (keyData == (Keys.Control | Keys.N))
+        {
+            btnAdd.PerformClick();
+            return true;
+        }
+        if (keyData == (Keys.Control | Keys.F))
+        {
+            txtSearch.Focus();
+            txtSearch.SelectAll();
+            return true;
+        }
+
+        // Enter and Delete only work on the table so typing in the search box is not affected
+        if (dgvStudents.Focused && keyData == Keys.Enter)
+        {
+            EditSelectedStudent();
+            return true;
+        }
+        if (dgvStudents.Focused && keyData == Keys.Delete)
+        {
+            btnDelete.PerformClick();
+            return true;
+        }
+        return base.ProcessCmdKey(ref msg, keyData);
     }
 
     private void StudentForm_Load(object sender, EventArgs e)

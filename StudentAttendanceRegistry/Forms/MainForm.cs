@@ -46,6 +46,63 @@ public partial class MainForm : Form
         Theme.StyleGrid(dgvAlerts);
         dgvAlerts.BorderStyle = BorderStyle.None;
         dgvAlerts.DataBindingComplete += dgvAlerts_DataBindingComplete;
+
+        AddToolTips();
+    }
+
+    // Hover text for the sidebar, with the shortcut for each page
+    private void AddToolTips()
+    {
+        toolTip.SetToolTip(btnHome, "Totals and low attendance alerts (Ctrl+1)");
+        toolTip.SetToolTip(btnManageStudents, "Add, edit and remove students (Ctrl+2)");
+        toolTip.SetToolTip(btnManageClasses, "Add, edit and remove classes (Ctrl+3)");
+        toolTip.SetToolTip(btnManageEnrolments, "Put students into classes (Ctrl+4)");
+        toolTip.SetToolTip(btnRecordAttendance, "Mark who was present for a class (Ctrl+5)");
+        toolTip.SetToolTip(btnViewHistory, "Every mark for one student in one class (Ctrl+6)");
+        toolTip.SetToolTip(btnViewReport, "Attendance totals for a whole class (Ctrl+7)");
+        toolTip.SetToolTip(lblDbStatus, "Shows if the app can reach the MySQL database");
+    }
+
+    // Ctrl+1 to Ctrl+7 open the pages in the sidebar
+    // Pages shown inside the main window pass their keys up to here as well
+    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+    {
+        if (keyData == (Keys.Control | Keys.D1))
+        {
+            ShowHome();
+            return true;
+        }
+        if (keyData == (Keys.Control | Keys.D2))
+        {
+            ShowPage(new StudentForm(), btnManageStudents);
+            return true;
+        }
+        if (keyData == (Keys.Control | Keys.D3))
+        {
+            ShowPage(new ClassForm(), btnManageClasses);
+            return true;
+        }
+        if (keyData == (Keys.Control | Keys.D4))
+        {
+            ShowPage(new EnrolmentForm(), btnManageEnrolments);
+            return true;
+        }
+        if (keyData == (Keys.Control | Keys.D5))
+        {
+            ShowPage(new AttendanceForm(), btnRecordAttendance);
+            return true;
+        }
+        if (keyData == (Keys.Control | Keys.D6))
+        {
+            ShowPage(new HistoryForm(), btnViewHistory);
+            return true;
+        }
+        if (keyData == (Keys.Control | Keys.D7))
+        {
+            ShowPage(new ReportForm(), btnViewReport);
+            return true;
+        }
+        return base.ProcessCmdKey(ref msg, keyData);
     }
 
     private void dgvAlerts_DataBindingComplete(object? sender, DataGridViewBindingCompleteEventArgs e)

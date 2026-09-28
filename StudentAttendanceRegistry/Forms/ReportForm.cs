@@ -15,6 +15,9 @@ public partial class ReportForm : Form
     {
         InitializeComponent();
         Theme.Apply(this, "Attendance totals for every student in a class");
+
+        toolTip.SetToolTip(cboClass, "The class to show the report for");
+        toolTip.SetToolTip(lblKey, "These students are under the minimum attendance");
     }
 
     private void ReportForm_Load(object sender, EventArgs e)

@@ -15,6 +15,10 @@ public partial class HistoryForm : Form
     {
         InitializeComponent();
         Theme.Apply(this, "See every attendance mark for one student in a class");
+
+        toolTip.SetToolTip(cboStudent, "The student to look up");
+        toolTip.SetToolTip(cboClass, "The class to show marks for");
+        toolTip.SetToolTip(lblStats, "Worked out from the dates listed below");
     }
 
     private void HistoryForm_Load(object sender, EventArgs e)

@@ -13,6 +13,27 @@ public partial class EnrolmentForm : Form
     {
         InitializeComponent();
         Theme.Apply(this, "Choose a class to enrol or remove students");
+
+        toolTip.SetToolTip(cboClass, "The class to change");
+        toolTip.SetToolTip(cboStudent, "Only students who are not in this class are listed");
+        toolTip.SetToolTip(btnEnrol, "Add the chosen student to this class (Ctrl+E)");
+        toolTip.SetToolTip(btnRemove, "Take the selected student out of this class (Delete key)");
+    }
+
+    // Keyboard shortcuts for this page
+    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+    {
+        if (keyData == (Keys.Control | Keys.E))
+        {
+            btnEnrol.PerformClick();
+            return true;
+        }
+        if (dgvEnrolled.Focused && keyData == Keys.Delete)
+        {
+            btnRemove.PerformClick();
+            return true;
+        }
+        return base.ProcessCmdKey(ref msg, keyData);
     }
 
     private void EnrolmentForm_Load(object sender, EventArgs e)

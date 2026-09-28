@@ -13,6 +13,40 @@ public partial class ClassForm : Form
     {
         InitializeComponent();
         Theme.Apply(this, "Add, edit and remove classes");
+
+        toolTip.SetToolTip(txtSearch, "Type part of a class code, name or teacher (Ctrl+F)");
+        toolTip.SetToolTip(btnAdd, "Add a new class (Ctrl+N)");
+        toolTip.SetToolTip(btnEdit, "Edit the selected class (Enter or double-click a row)");
+        toolTip.SetToolTip(btnDelete, "Delete the selected class (Delete key)");
+    }
+
+    // Keyboard shortcuts for this page
+    protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+    {
+        if (keyData == (Keys.Control | Keys.N))
+        {
+            btnAdd.PerformClick();
+            return true;
+        }
+        if (keyData == (Keys.Control | Keys.F))
+        {
+            txtSearch.Focus();
+            txtSearch.SelectAll();
+            return true;
+        }
+
+        // Enter and Delete only work on the table so typing in the search box is not affected
+        if (dgvClasses.Focused && keyData == Keys.Enter)
+        {
+            EditSelectedClass();
+            return true;
+        }
+        if (dgvClasses.Focused && keyData == Keys.Delete)
+        {
+            btnDelete.PerformClick();
+            return true;
+        }
+        return base.ProcessCmdKey(ref msg, keyData);
     }
 
     private void ClassForm_Load(object sender, EventArgs e)

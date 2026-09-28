@@ -29,6 +29,7 @@ partial class AttendanceForm
     private void InitializeComponent()
     {
         components = new System.ComponentModel.Container();
+        toolTip = new ToolTip(components);
         lblClass = new Label();
         cboClass = new ComboBox();
         lblDate = new Label();
@@ -190,4 +191,5 @@ partial class AttendanceForm
     private DataGridViewTextBoxColumn colStudentId;
     private DataGridViewTextBoxColumn colStudentName;
     private DataGridViewCheckBoxColumn colPresent;
+    private ToolTip toolTip;
 }

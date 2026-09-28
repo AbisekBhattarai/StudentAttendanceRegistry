@@ -23,6 +23,11 @@ public partial class StudentEditForm : Form
         lblSubtitle.ForeColor = Theme.MutedText;
         lblError.ForeColor = Theme.Danger;
 
+        toolTip.SetToolTip(txtStudentId, "The letter S followed by 7 numbers");
+        toolTip.SetToolTip(txtEmail, "Can be left empty");
+        toolTip.SetToolTip(btnSave, "Save the student (Enter)");
+        toolTip.SetToolTip(btnCancel, "Close without saving (Esc)");
+
         if (student == null)
         {
             isNew = true;

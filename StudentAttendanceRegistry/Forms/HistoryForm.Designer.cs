@@ -29,6 +29,7 @@ partial class HistoryForm
     private void InitializeComponent()
     {
         components = new System.ComponentModel.Container();
+        toolTip = new ToolTip(components);
         lblStudent = new Label();
         cboStudent = new ComboBox();
         lblClass = new Label();
@@ -155,4 +156,5 @@ partial class HistoryForm
     private DataGridView dgvHistory;
     private DataGridViewTextBoxColumn colDate;
     private DataGridViewTextBoxColumn colStatus;
+    private ToolTip toolTip;
 }

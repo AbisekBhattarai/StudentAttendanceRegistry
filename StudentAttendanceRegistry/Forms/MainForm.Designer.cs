@@ -29,6 +29,7 @@ partial class MainForm
     private void InitializeComponent()
     {
         components = new System.ComponentModel.Container();
+        toolTip = new ToolTip(components);
         pnlSidebar = new Panel();
         lblAppName = new Label();
         lblAppSub = new Label();
@@ -513,4 +514,5 @@ partial class MainForm
     private Label lblAlertsSub;
     private Label lblNoAlerts;
     private DataGridView dgvAlerts;
+    private ToolTip toolTip;
 }

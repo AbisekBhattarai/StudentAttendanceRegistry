@@ -29,6 +29,7 @@ partial class EnrolmentForm
     private void InitializeComponent()
     {
         components = new System.ComponentModel.Container();
+        toolTip = new ToolTip(components);
         lblClass = new Label();
         cboClass = new ComboBox();
         lblStudent = new Label();
@@ -152,4 +153,5 @@ partial class EnrolmentForm
     private Button btnRemove;
     private Label lblCount;
     private DataGridView dgvEnrolled;
+    private ToolTip toolTip;
 }

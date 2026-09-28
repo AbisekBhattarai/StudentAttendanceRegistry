@@ -29,6 +29,7 @@ partial class StudentEditForm
     private void InitializeComponent()
     {
         components = new System.ComponentModel.Container();
+        toolTip = new ToolTip(components);
         lblTitle = new Label();
         lblSubtitle = new Label();
         lblStudentId = new Label();
@@ -213,4 +214,5 @@ partial class StudentEditForm
     private Label lblError;
     private Button btnCancel;
     private Button btnSave;
+    private ToolTip toolTip;
 }

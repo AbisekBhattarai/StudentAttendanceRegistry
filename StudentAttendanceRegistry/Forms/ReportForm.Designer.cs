@@ -29,6 +29,7 @@ partial class ReportForm
     private void InitializeComponent()
     {
         components = new System.ComponentModel.Container();
+        toolTip = new ToolTip(components);
         lblClass = new Label();
         cboClass = new ComboBox();
         lblMessage = new Label();
@@ -161,4 +162,5 @@ partial class ReportForm
     private DataGridViewTextBoxColumn colAttended;
     private DataGridViewTextBoxColumn colAbsent;
     private DataGridViewTextBoxColumn colPercentage;
+    private ToolTip toolTip;
 }
