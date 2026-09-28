@@ -71,7 +71,7 @@ public partial class ClassEditForm : Form
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error");
+            MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

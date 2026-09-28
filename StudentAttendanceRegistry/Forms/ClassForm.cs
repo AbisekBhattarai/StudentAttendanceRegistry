@@ -27,7 +27,14 @@ public partial class ClassForm : Form
         {
             List<ClassGroup> classes = repository.Search(txtSearch.Text.Trim());
             dgvClasses.DataSource = classes;
-            lblCount.Text = classes.Count + " classes";
+            if (classes.Count == 1)
+            {
+                lblCount.Text = "1 class";
+            }
+            else
+            {
+                lblCount.Text = classes.Count + " classes";
+            }
 
             // the user does not need to see the database id
             DataGridViewColumn? idColumn = dgvClasses.Columns["ClassId"];
@@ -77,7 +84,8 @@ public partial class ClassForm : Form
         ClassGroup? classGroup = GetSelectedClass();
         if (classGroup == null)
         {
-            MessageBox.Show("Please choose a class from the list first.", "No class selected");
+            MessageBox.Show("Please click a class in the list, then press Edit.", "No class selected",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
@@ -95,14 +103,16 @@ public partial class ClassForm : Form
         ClassGroup? classGroup = GetSelectedClass();
         if (classGroup == null)
         {
-            MessageBox.Show("Please choose a class from the list first.", "No class selected");
+            MessageBox.Show("Please click a class in the list, then press Delete.", "No class selected",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
         // deleting a class also removes its enrolments and attendance (ON DELETE CASCADE)
+        // No is the default button so pressing Enter by mistake does not delete anything
         DialogResult answer = MessageBox.Show("Delete class " + classGroup.ClassCode
             + "? Its enrolments and attendance records will also be deleted.", "Confirm delete",
-            MessageBoxButtons.YesNo);
+            MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
         if (answer != DialogResult.Yes)
         {
             return;
@@ -130,6 +140,6 @@ public partial class ClassForm : Form
 
     private void ShowError(Exception ex)
     {
-        MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error");
+        MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 }

@@ -24,7 +24,8 @@ public partial class ReportForm : Form
             List<ClassGroup> classes = classRepository.GetAll();
             if (classes.Count == 0)
             {
-                MessageBox.Show("Please add a class first.", "Attendance report");
+                MessageBox.Show("There are no classes yet. Please add a class on the Classes page first.", "Attendance report",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             // setting the data source picks the first class and loads its report
@@ -88,8 +89,8 @@ public partial class ReportForm : Form
                 }
             }
 
-            lblMessage.Text = students.Count + " students enrolled in " + classGroup.ClassCode + ", "
-                + belowCount + " below 75% attendance.";
+            lblMessage.Text = students.Count + " enrolled in " + classGroup.ClassCode + ", "
+                + belowCount + " below " + AttendanceCalculator.MinimumPercentage + "% attendance.";
         }
         catch (Exception ex)
         {
@@ -99,6 +100,6 @@ public partial class ReportForm : Form
 
     private void ShowError(Exception ex)
     {
-        MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error");
+        MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 }

@@ -22,7 +22,8 @@ public partial class EnrolmentForm : Form
             List<ClassGroup> classes = classRepository.GetAll();
             if (classes.Count == 0)
             {
-                MessageBox.Show("There are no classes yet. Please add a class first.", "No classes");
+                MessageBox.Show("There are no classes yet. Please add a class on the Classes page first.", "No classes",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             // setting the data source picks the first class and runs cboClass_SelectedIndexChanged
@@ -74,14 +75,24 @@ public partial class EnrolmentForm : Form
         ClassGroup? classGroup = cboClass.SelectedItem as ClassGroup;
         if (classGroup == null)
         {
-            MessageBox.Show("Please choose a class first.", "No class selected");
+            MessageBox.Show("Please choose a class first.", "No class selected",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        // the drop down is empty when every student is already in this class
+        if (cboStudent.Items.Count == 0)
+        {
+            MessageBox.Show("Every student is already enrolled in " + classGroup.ClassCode + ".", "Nothing to enrol",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
             return;
         }
 
         Student? student = cboStudent.SelectedItem as Student;
         if (student == null)
         {
-            MessageBox.Show("Please choose a student to enrol.", "No student selected");
+            MessageBox.Show("Please choose a student to enrol.", "No student selected",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
@@ -89,7 +100,8 @@ public partial class EnrolmentForm : Form
         {
             if (enrolmentRepository.IsEnrolled(student.StudentId, classGroup.ClassId))
             {
-                MessageBox.Show(student.FullName + " is already enrolled in this class.", "Already enrolled");
+                MessageBox.Show(student.FullName + " is already enrolled in this class.", "Already enrolled",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -112,13 +124,15 @@ public partial class EnrolmentForm : Form
         ClassGroup? classGroup = cboClass.SelectedItem as ClassGroup;
         if (classGroup == null)
         {
-            MessageBox.Show("Please choose a class first.", "No class selected");
+            MessageBox.Show("Please choose a class first.", "No class selected",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
         if (dgvEnrolled.SelectedRows.Count == 0)
         {
-            MessageBox.Show("Please choose a student from the enrolled list first.", "No student selected");
+            MessageBox.Show("Please click a student in the enrolled list, then press Remove.", "No student selected",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
@@ -129,8 +143,9 @@ public partial class EnrolmentForm : Form
         }
 
         // removing an enrolment keeps the student's old attendance records
-        DialogResult answer = MessageBox.Show("Remove " + student.FullName + " from " + classGroup.ClassCode + "?",
-            "Confirm remove", MessageBoxButtons.YesNo);
+        DialogResult answer = MessageBox.Show("Remove " + student.FullName + " from " + classGroup.ClassCode + "?"
+            + " Their past attendance is kept.", "Confirm remove",
+            MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
         if (answer != DialogResult.Yes)
         {
             return;
@@ -149,6 +164,6 @@ public partial class EnrolmentForm : Form
 
     private void ShowError(Exception ex)
     {
-        MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error");
+        MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 }

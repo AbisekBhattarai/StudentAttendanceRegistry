@@ -241,6 +241,10 @@ public static class Theme
             inputs[i].Anchor = anchors[i];
         }
         form.Controls.Add(card);
+
+        // the card is added last, so without this Tab would jump to the table before the inputs
+        card.TabIndex = 0;
+        grid.TabIndex = 1;
         card.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
         // the table goes under the card and fills the rest of the page

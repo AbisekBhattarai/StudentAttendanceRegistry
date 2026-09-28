@@ -80,7 +80,7 @@ public partial class StudentEditForm : Form
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error");
+            MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

@@ -169,7 +169,7 @@ public partial class MainForm : Form
             else
             {
                 AttendanceCalculator calculator = new AttendanceCalculator();
-                lblTodayPercent.Text = calculator.GetPercentage(today) + "%";
+                lblTodayPercent.Text = calculator.GetPercentage(today).ToString("0.0") + "%";
                 lblTodayCaption.Text = calculator.CountAttended(today) + " of " + today.Count + " present today";
             }
 
@@ -186,7 +186,7 @@ public partial class MainForm : Form
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error");
+            MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 

@@ -26,7 +26,8 @@ public partial class HistoryForm : Form
 
             if (students.Count == 0 || classes.Count == 0)
             {
-                MessageBox.Show("Please add students and classes first.", "Attendance history");
+                MessageBox.Show("Please add students and classes first.", "Attendance history",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             // setting the data sources picks the first student and class and loads their history
@@ -76,6 +77,10 @@ public partial class HistoryForm : Form
             {
                 lblMessage.Text = "No attendance recorded for " + student.FullName + " in this class.";
             }
+            else if (records.Count == 1)
+            {
+                lblMessage.Text = "1 date recorded for " + student.FullName + ".";
+            }
             else
             {
                 lblMessage.Text = records.Count + " dates recorded for " + student.FullName + ".";
@@ -102,6 +107,6 @@ public partial class HistoryForm : Form
 
     private void ShowError(Exception ex)
     {
-        MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error");
+        MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 }

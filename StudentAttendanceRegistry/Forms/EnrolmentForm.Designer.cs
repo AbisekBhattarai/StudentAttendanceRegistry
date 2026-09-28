@@ -63,9 +63,9 @@ partial class EnrolmentForm
         lblStudent.AutoSize = true;
         lblStudent.Location = new Point(20, 60);
         lblStudent.Name = "lblStudent";
-        lblStudent.Size = new Size(48, 15);
+        lblStudent.Size = new Size(78, 15);
         lblStudent.TabIndex = 2;
-        lblStudent.Text = "Student";
+        lblStudent.Text = "Enrol student";
         //
         // cboStudent
         //

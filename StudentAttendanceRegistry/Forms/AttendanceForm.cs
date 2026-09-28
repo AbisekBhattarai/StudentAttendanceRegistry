@@ -32,7 +32,8 @@ public partial class AttendanceForm : Form
             List<ClassGroup> classes = classRepository.GetAll();
             if (classes.Count == 0)
             {
-                MessageBox.Show("There are no classes yet. Please add a class first.", "No classes");
+                MessageBox.Show("There are no classes yet. Please add a class on the Classes page first.", "No classes",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             // setting the data source picks the first class and loads its students
@@ -143,7 +144,8 @@ public partial class AttendanceForm : Form
         ClassGroup? classGroup = cboClass.SelectedItem as ClassGroup;
         if (classGroup == null || dgvAttendance.Rows.Count == 0)
         {
-            MessageBox.Show("There is nothing to save.", "Save attendance");
+            MessageBox.Show("There is nothing to save. Enrol students in this class on the Enrolments page first.",
+                "Save attendance", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return;
         }
 
@@ -155,7 +157,8 @@ public partial class AttendanceForm : Form
             if (row.Cells["colPresent"].Value == null)
             {
                 string name = Convert.ToString(row.Cells["colStudentName"].Value) ?? "";
-                MessageBox.Show("Please mark " + name + " as present or absent.", "Save attendance");
+                MessageBox.Show("Please mark " + name + " as present or absent.", "Save attendance",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -170,7 +173,7 @@ public partial class AttendanceForm : Form
         string message = validator.ValidateAll(records);
         if (message != "")
         {
-            MessageBox.Show(message, "Save attendance");
+            MessageBox.Show(message, "Save attendance", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
@@ -178,7 +181,8 @@ public partial class AttendanceForm : Form
         {
             attendanceRepository.SaveAll(records);
             alreadySaved = true;
-            MessageBox.Show("Attendance saved for " + dtpDate.Value.ToShortDateString() + ".", "Save attendance");
+            MessageBox.Show("Attendance saved for " + classGroup.ClassCode + " on " + dtpDate.Value.ToShortDateString() + ".",
+                "Save attendance", MessageBoxButtons.OK, MessageBoxIcon.Information);
             UpdateSummary();
         }
         catch (Exception ex)
@@ -210,6 +214,6 @@ public partial class AttendanceForm : Form
 
     private void ShowError(Exception ex)
     {
-        MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error");
+        MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 }

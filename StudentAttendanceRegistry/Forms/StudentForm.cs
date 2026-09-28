@@ -27,7 +27,14 @@ public partial class StudentForm : Form
         {
             List<Student> students = repository.Search(txtSearch.Text.Trim());
             dgvStudents.DataSource = students;
-            lblCount.Text = students.Count + " students";
+            if (students.Count == 1)
+            {
+                lblCount.Text = "1 student";
+            }
+            else
+            {
+                lblCount.Text = students.Count + " students";
+            }
 
             DataGridViewColumn? fullNameColumn = dgvStudents.Columns["FullName"];
             if (fullNameColumn != null)
@@ -76,7 +83,8 @@ public partial class StudentForm : Form
         Student? student = GetSelectedStudent();
         if (student == null)
         {
-            MessageBox.Show("Please choose a student from the list first.", "No student selected");
+            MessageBox.Show("Please click a student in the list, then press Edit.", "No student selected",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
@@ -94,12 +102,15 @@ public partial class StudentForm : Form
         Student? student = GetSelectedStudent();
         if (student == null)
         {
-            MessageBox.Show("Please choose a student from the list first.", "No student selected");
+            MessageBox.Show("Please click a student in the list, then press Delete.", "No student selected",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
+        // No is the default button so pressing Enter by mistake does not delete anything
         DialogResult answer = MessageBox.Show("Delete " + student.FullName + " (" + student.StudentId + ")? "
-            + "Their enrolments and attendance will also be deleted.", "Confirm delete", MessageBoxButtons.YesNo);
+            + "Their enrolments and attendance will also be deleted.", "Confirm delete",
+            MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
         if (answer != DialogResult.Yes)
         {
             return;
@@ -127,6 +138,6 @@ public partial class StudentForm : Form
 
     private void ShowError(Exception ex)
     {
-        MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error");
+        MessageBox.Show(ErrorMessages.GetFriendlyMessage(ex), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 }
