@@ -23,9 +23,24 @@ public class StudentValidator : Validator<Student>
             return "Please enter a first name.";
         }
 
+        if (IsTooLong(student.FirstName, 50))
+        {
+            return "First name can be at most 50 characters.";
+        }
+
         if (IsBlank(student.LastName))
         {
             return "Please enter a last name.";
+        }
+
+        if (IsTooLong(student.LastName, 50))
+        {
+            return "Last name can be at most 50 characters.";
+        }
+
+        if (IsTooLong(student.Email, 100))
+        {
+            return "Email can be at most 100 characters.";
         }
 
         if (student.Email != "" && !IsValidEmail(student.Email))
