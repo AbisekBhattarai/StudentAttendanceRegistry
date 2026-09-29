@@ -81,6 +81,7 @@ public class AttendanceRepository : BaseRepository
     }
 
     // Returns the attended and total counts for every student in every class
+    // Students who were removed from a class are left out, the same as on the report page
     public List<AttendanceSummary> GetSummaries()
     {
         List<AttendanceSummary> summaries = new List<AttendanceSummary>();
@@ -90,6 +91,7 @@ public class AttendanceRepository : BaseRepository
             string sql = "SELECT s.StudentId, s.FirstName, s.LastName, c.ClassCode, "
                        + "SUM(a.IsPresent) AS Attended, COUNT(*) AS Total "
                        + "FROM Attendance a "
+                       + "JOIN Enrolments e ON e.StudentId = a.StudentId AND e.ClassId = a.ClassId "
                        + "JOIN Students s ON s.StudentId = a.StudentId "
                        + "JOIN Classes c ON c.ClassId = a.ClassId "
                        + "GROUP BY s.StudentId, s.FirstName, s.LastName, c.ClassCode "
@@ -129,37 +131,48 @@ public class AttendanceRepository : BaseRepository
         }
     }
 
-    // Adds a new mark, or changes the old one if the student was already marked that day
-    public void Save(AttendanceRecord record)
+    // Saves every mark for one class and date
+    // Uses a transaction so nothing is saved if one of the marks fails
+    public void SaveAll(List<AttendanceRecord> records)
     {
         using (MySqlConnection connection = OpenConnection())
         {
-            string updateSql = "UPDATE Attendance SET IsPresent = @isPresent "
-                             + "WHERE StudentId = @studentId AND ClassId = @classId AND AttendanceDate = @date";
-            MySqlCommand updateCommand = new MySqlCommand(updateSql, connection);
-            AddParameters(updateCommand, record);
-
-            int changed = updateCommand.ExecuteNonQuery();
-            if (changed > 0)
+            MySqlTransaction transaction = connection.BeginTransaction();
+            try
             {
-                return;
+                foreach (AttendanceRecord record in records)
+                {
+                    Save(record, connection, transaction);
+                }
+                transaction.Commit();
             }
-
-            string insertSql = "INSERT INTO Attendance (StudentId, ClassId, AttendanceDate, IsPresent) "
-                             + "VALUES (@studentId, @classId, @date, @isPresent)";
-            MySqlCommand insertCommand = new MySqlCommand(insertSql, connection);
-            AddParameters(insertCommand, record);
-            insertCommand.ExecuteNonQuery();
+            catch (Exception)
+            {
+                transaction.Rollback();
+                throw;
+            }
         }
     }
 
-    // Saves every mark for one class and date
-    public void SaveAll(List<AttendanceRecord> records)
+    // Adds a new mark, or changes the old one if the student was already marked that day
+    private void Save(AttendanceRecord record, MySqlConnection connection, MySqlTransaction transaction)
     {
-        foreach (AttendanceRecord record in records)
+        string updateSql = "UPDATE Attendance SET IsPresent = @isPresent "
+                         + "WHERE StudentId = @studentId AND ClassId = @classId AND AttendanceDate = @date";
+        MySqlCommand updateCommand = new MySqlCommand(updateSql, connection, transaction);
+        AddParameters(updateCommand, record);
+
+        int changed = updateCommand.ExecuteNonQuery();
+        if (changed > 0)
         {
-            Save(record);
+            return;
         }
+
+        string insertSql = "INSERT INTO Attendance (StudentId, ClassId, AttendanceDate, IsPresent) "
+                         + "VALUES (@studentId, @classId, @date, @isPresent)";
+        MySqlCommand insertCommand = new MySqlCommand(insertSql, connection, transaction);
+        AddParameters(insertCommand, record);
+        insertCommand.ExecuteNonQuery();
     }
 
     private void AddParameters(MySqlCommand command, AttendanceRecord record)
