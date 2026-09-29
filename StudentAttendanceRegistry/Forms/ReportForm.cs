@@ -4,6 +4,7 @@ using StudentAttendanceRegistry.Services;
 
 namespace StudentAttendanceRegistry.Forms;
 
+// Attendance summary for every student in a class
 public partial class ReportForm : Form
 {
     private ClassRepository classRepository = new ClassRepository();
@@ -73,18 +74,19 @@ public partial class ReportForm : Form
                 List<AttendanceRecord> records = attendanceRepository.GetByStudentAndClass(student.StudentId, classGroup.ClassId);
                 int attended = calculator.CountAttended(records);
                 int absent = calculator.CountAbsent(records);
+                double percentage = calculator.GetPercentage(records);
 
                 // show a dash when the student has not been marked yet
-                string percentage = "-";
+                string percentageText = "-";
                 if (records.Count > 0)
                 {
-                    percentage = calculator.GetPercentage(records).ToString("0.0") + "%";
+                    percentageText = percentage.ToString("0.0") + "%";
                 }
 
-                int rowIndex = dgvReport.Rows.Add(student.StudentId, student.FullName, attended, absent, percentage);
+                int rowIndex = dgvReport.Rows.Add(student.StudentId, student.FullName, attended, absent, percentageText);
 
-                // colour the row red when the student is below 75%
-                if (records.Count > 0 && calculator.GetPercentage(records) < AttendanceCalculator.MinimumPercentage)
+                // colour the row red when the student is below the minimum
+                if (records.Count > 0 && percentage < AttendanceCalculator.MinimumPercentage)
                 {
                     dgvReport.Rows[rowIndex].DefaultCellStyle.BackColor = Color.MistyRose;
                     dgvReport.Rows[rowIndex].DefaultCellStyle.ForeColor = Color.DarkRed;

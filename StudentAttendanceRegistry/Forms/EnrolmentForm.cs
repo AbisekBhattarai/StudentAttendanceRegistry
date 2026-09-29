@@ -4,6 +4,7 @@ using StudentAttendanceRegistry.Services;
 
 namespace StudentAttendanceRegistry.Forms;
 
+// Adds students to a class or removes them from it
 public partial class EnrolmentForm : Form
 {
     private ClassRepository classRepository = new ClassRepository();

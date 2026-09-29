@@ -5,6 +5,7 @@ using StudentAttendanceRegistry.Validation;
 
 namespace StudentAttendanceRegistry.Forms;
 
+// Marks students present or absent for a class on a date
 public partial class AttendanceForm : Form
 {
     private ClassRepository classRepository = new ClassRepository();

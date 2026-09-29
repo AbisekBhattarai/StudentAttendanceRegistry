@@ -116,21 +116,6 @@ public class AttendanceRepository : BaseRepository
         return summaries;
     }
 
-    // True when the class already has marks saved for that date
-    public bool HasAttendance(int classId, DateTime date)
-    {
-        using (MySqlConnection connection = OpenConnection())
-        {
-            string sql = "SELECT COUNT(*) FROM Attendance WHERE ClassId = @classId AND AttendanceDate = @date";
-            MySqlCommand command = new MySqlCommand(sql, connection);
-            command.Parameters.AddWithValue("@classId", classId);
-            command.Parameters.AddWithValue("@date", date.Date);
-
-            long count = Convert.ToInt64(command.ExecuteScalar());
-            return count > 0;
-        }
-    }
-
     // Saves every mark for one class and date
     // Uses a transaction so nothing is saved if one of the marks fails
     public void SaveAll(List<AttendanceRecord> records)

@@ -27,26 +27,6 @@ public class ClassRepository : BaseRepository
         return classes;
     }
 
-    public ClassGroup? GetById(int classId)
-    {
-        using (MySqlConnection connection = OpenConnection())
-        {
-            string sql = "SELECT ClassId, ClassCode, ClassName, Teacher FROM Classes WHERE ClassId = @id";
-            MySqlCommand command = new MySqlCommand(sql, connection);
-            command.Parameters.AddWithValue("@id", classId);
-
-            using (MySqlDataReader reader = command.ExecuteReader())
-            {
-                if (reader.Read())
-                {
-                    return ReadClass(reader);
-                }
-            }
-        }
-
-        return null;
-    }
-
     // Finds classes whose code, name or teacher contains the search text
     public List<ClassGroup> Search(string searchText)
     {

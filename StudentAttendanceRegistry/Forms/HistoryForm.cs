@@ -4,6 +4,7 @@ using StudentAttendanceRegistry.Services;
 
 namespace StudentAttendanceRegistry.Forms;
 
+// Shows one student's attendance in one class, with their statistics
 public partial class HistoryForm : Form
 {
     private StudentRepository studentRepository = new StudentRepository();
